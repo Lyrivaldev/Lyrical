@@ -1,0 +1,41 @@
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create the CoreGui ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Create the frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 317, 0, 26)
+frame.Position = UDim2.new(0, 0, 0, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- Add the red line on top
+local topLine = Instance.new("Frame", frame)
+topLine.Size = UDim2.new(1, 0, 0, 1)
+topLine.Position = UDim2.new(0, 0, 0, -1)
+topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+topLine.BorderSizePixel = 0
+
+-- Add the text label
+local textLabel = Instance.new("TextLabel", frame)
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Position = UDim2.new(0, 0, 0, 0)
+textLabel.BackgroundTransparency = 1
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.Font = Enum.Font.Code
+textLabel.TextSize = 14
+
+-- Function to update FPS and time
+local function updateFpsAndTime()
+    local fps = math.floor(workspace:GetRealPhysicsFPS())
+    local currentTime = os.date("%I:%M %p") -- Format time as HH:MM AM/PM
+    textLabel.Text = string.format("Acsy | Whitelisted | %d FPS | %s", fps, currentTime)
+end
+
+-- Update FPS and time every heartbeat
+game:GetService("RunService").Heartbeat:Connect(updateFpsAndTime)
