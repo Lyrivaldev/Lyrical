@@ -1,1 +1,0 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Acsys%20script", true))()
