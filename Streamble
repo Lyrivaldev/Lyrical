@@ -1,0 +1,229 @@
+repeat task.wait() until Game:IsLoaded()
+    
+--> Services | Variables <--
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local Players = game:GetService("Players")
+local CoreGui = game:GetService("CoreGui")
+
+--> LocalPlayer | Variables <--
+local player = Players.LocalPlayer
+local playerCharacter = player.Character
+local playerCamera = Workspace.CurrentCamera
+
+--> Targeted Player | Variables <--
+local TargetedPlayer = nil
+local TargetedPlayerCharacter = nil
+local TargetedPlayerAimPart = nil
+
+--> Silent Aim | Global Variables <--
+getgenv().Silent = {
+    Settings = {
+        Toggled = true,
+        AimPart = "UpperTorso", -- HumanoidRootPart, UpperTorso, LowerTorso, Head <-- Main Parts
+        HitChance = 100,
+        
+        Prediction = {
+            Toggled = true,
+            Horizontal = 0.14181525, -- x and z
+            Vertical = 0.13988125, -- y
+        },
+       
+        Circle = {
+            Visible = false,
+            Color = Color3.fromRGB(255, 0, 0),
+            Transparency = 1,
+            Thickness = 1,
+            NumSides = 1000,
+            Radius = 8,
+            Filled = false,
+        },
+    },
+}
+
+local Hit_Success = false -- don't touch this.
+
+--> ScreenGui | Variables <--
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = CoreGui
+ScreenGui.Name = "ScreenGui"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = false
+ScreenGui.DisplayOrder = 9e9
+ScreenGui.Enabled = true
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.AutoLocalize = true
+ScreenGui.Archivable = true
+
+--[[
+--> TextLabel | Variables <--
+local TextLabel = Instance.new("TextLabel")
+TextLabel.Parent = ScreenGui
+TextLabel.Name = "Auto Prediction | TextLabel"
+TextLabel.Text = ""
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 18
+TextLabel.Font = Enum.Font.Code
+TextLabel.TextScaled = false
+TextLabel.TextWrapped = true
+TextLabel.TextXAlignment = Enum.TextXAlignment.Center
+TextLabel.TextYAlignment = Enum.TextYAlignment.Center
+TextLabel.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.Size = UDim2.new(0.25, 0, 0.25, 0) 
+TextLabel.Position = UDim2.new(0.5, 0, 0.225, 0)
+TextLabel.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel.Visible = true
+TextLabel.ZIndex = 1
+TextLabel.RichText = false
+TextLabel.LineHeight = 1
+TextLabel.TextStrokeTransparency = 0
+TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+TextLabel.AutoLocalize = true
+TextLabel.ClipsDescendants = false 
+TextLabel.Draggable = false
+TextLabel.Selectable = false
+TextLabel.Rotation = 0
+TextLabel.SizeConstraint = Enum.SizeConstraint.RelativeXY 
+TextLabel.LayoutOrder = 1 
+TextLabel.Archivable = true
+]]
+
+--> FOV Circle | Variables <--
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Visible = Silent.Settings.Circle.Visible
+FOVCircle.Color = Silent.Settings.Circle.Color
+FOVCircle.Transparency = Silent.Settings.Circle.Transparency
+FOVCircle.Thickness = Silent.Settings.Circle.Thickness
+FOVCircle.NumSides = Silent.Settings.Circle.NumSides
+FOVCircle.Radius = playerCamera.ViewportSize.X / Silent.Settings.Circle.Radius
+FOVCircle.Filled = Silent.Settings.Circle.Filled
+FOVCircle.Position = Vector2.new(playerCamera.ViewportSize.X / 2, playerCamera.ViewportSize.Y / 2)
+
+--> Function To Handle LocalPlayer Respawns <--
+player.CharacterAdded:Connect(function(NewCharacter)
+    playerCharacter = NewCharacter
+end)
+
+--> Function To Get The Closest Player <--
+local function GetClosestPlayer()
+    local ClosestPlayer = nil
+    local ShortestDistance = math.huge
+
+    for _, Player in ipairs(Players:GetPlayers()) do
+        if Player ~= player and Player.Character then
+            for _, PlayerPart in ipairs(Player.Character:GetChildren()) do
+                if PlayerPart:IsA("BasePart") and PlayerPart.Transparency ~= 1 then
+                    local PlayerScreenPosition = playerCamera:WorldToViewportPoint(PlayerPart.Position)                   
+                    local PlayerDirection = (PlayerPart.Position - playerCamera.CFrame.Position).unit
+                    local DotProduct = playerCamera.CFrame.LookVector:Dot(PlayerDirection)
+                    
+                    if DotProduct > 0 then
+                        local MagnitudeDistance = (Vector2.new(PlayerScreenPosition.X, PlayerScreenPosition.Y) - FOVCircle.Position).Magnitude
+                        
+                        if MagnitudeDistance < ShortestDistance and MagnitudeDistance <= FOVCircle.Radius then
+                            ClosestPlayer = Player
+                            ShortestDistance = MagnitudeDistance
+                        end
+                    end
+                end
+            end
+        end
+    end
+    return ClosestPlayer
+end
+
+--> Function To Handle Targeted Player Variables <-- 
+RunService.RenderStepped:Connect(function(deltaTime)
+    TargetedPlayer = GetClosestPlayer()
+    if TargetedPlayer and TargetedPlayer.Character and TargetedPlayer.Character:WaitForChild(Silent.Settings.AimPart) then
+        TargetedPlayerCharacter = TargetedPlayer.Character
+        TargetedPlayerAimPart = TargetedPlayerCharacter:WaitForChild(Silent.Settings.AimPart)
+    end
+    
+    --TextLabel.Text = "Hit Chance: "..Silent.Settings.HitChance.."\nHit Success: "..tostring(Hit_Success)
+end)
+
+--> Adonis Bypasser <--
+for _, collectedItem in pairs(getgc(true)) do
+    if pcall(function() return rawget(collectedItem, "indexInstance") end) then
+        local indexInstanceProperty = rawget(collectedItem, "indexInstance")
+        if type(indexInstanceProperty) == "table" and indexInstanceProperty[1] == "kick" then
+            collectedItem.kickHandler = {
+                "kick",
+                function() 
+                    wait(100e100)
+                    return coroutine.yield() 
+                end
+            }
+        end
+    end
+end
+
+--> RawMetaTables | Varaibles <--
+local RawMetaTable = getrawmetatable(game)
+local OldRawMetaTable = RawMetaTable.__namecall
+
+setreadonly(RawMetaTable, false)
+
+--> Seed The Random Number Generator <--
+math.randomseed(os.time())
+
+--> Silent Aim Funciton <--
+RawMetaTable.__namecall = newcclosure(function(...)
+    local RemoteArguments = {...}
+
+    if Silent.Settings.Toggled and getnamecallmethod() == "FireServer" and TargetedPlayer and TargetedPlayerCharacter and TargetedPlayerAimPart then
+        local VelocityPrediction = Vector3.new(TargetedPlayerAimPart.Velocity.X * Silent.Settings.Prediction.Horizontal, TargetedPlayerAimPart.Velocity.Y * Silent.Settings.Prediction.Vertical, TargetedPlayerAimPart.Velocity.Z * Silent.Settings.Prediction.Horizontal)
+        Hit_Success = math.random(100) <= Silent.Settings.HitChance
+        
+        if (RemoteArguments[2] == "UpdateMousePos" and type(RemoteArguments[3]) ~= "table") or (RemoteArguments[2] == "MousePos" and type(RemoteArguments[3]) ~= "table") or (RemoteArguments[2] == "MOUSE" and type(RemoteArguments[3]) ~= "table") then 
+            
+            if Hit_Success then
+                if Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = TargetedPlayerAimPart.Position + VelocityPrediction
+                elseif not Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = TargetedPlayerAimPart.Position
+                end
+            end
+            
+        elseif (RemoteArguments[2] == "UpdateMousePos" and type(RemoteArguments[3]) == "table" and RemoteArguments[3]["MousePos"] and RemoteArguments[3]["Camera"] and not RemoteArguments[3][1] and not RemoteArguments[3][2]) then
+            
+            if Hit_Success then
+                if Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = {
+                        ["MousePos"] = TargetedPlayerAimPart.Position + VelocityPrediction,
+                        ["Camera"] = TargetedPlayerAimPart.Position + VelocityPrediction
+                    }
+                elseif not Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = {
+                        ["MousePos"] = TargetedPlayerAimPart.Position,
+                        ["Camera"] = TargetedPlayerAimPart.Position
+                    }
+                end
+            end
+            
+        elseif (RemoteArguments[2] == "UpdateMousePos" and type(RemoteArguments[3]) == "table" and not RemoteArguments[3]["MousePos"] and not RemoteArguments[3]["Camera"] and RemoteArguments[3][1] and RemoteArguments[3][2]) then
+            
+            if Hit_Success then
+                if Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = {
+                        [1] = TargetedPlayerAimPart.Position + VelocityPrediction,
+                        [2] = TargetedPlayerAimPart.Position + VelocityPrediction
+                    }
+                elseif not Silent.Settings.Prediction.Toggled then
+                    RemoteArguments[3] = {
+                        [1] = TargetedPlayerAimPart.Position,
+                        [2] = TargetedPlayerAimPart.Position
+                    }
+                end
+            end
+            
+        end
+        
+        return OldRawMetaTable(unpack(RemoteArguments))
+    end
+    return OldRawMetaTable(...)
+end)
