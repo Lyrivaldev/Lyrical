@@ -3,7 +3,7 @@ local Window = Library:CreateWindow("Acsy.cc | ☫", Vector2.new(300, 300), Enum
 local AimingTab = Window:CreateTab("Legit") --you can rename this tab to whatever you want --you can also change the tabs code, for example "AimingTab" can be changed to "FunnyCoolTab" etc.
 
 
-local testSection = AimingTab:CreateSector("First Section", "left")
+local testSection = AimingTab:CreateSector("Locks", "left")
 
 testSection:AddButton("Camlock", function(IhateGayPeople)
    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Lock%20acsy"))()
@@ -13,7 +13,35 @@ end)
 testSection:AddTextbox("Prediction", nil, function(State)
 end)
 
-local testSection = AimingTab:CreateSector("First Section", "right")
+testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"}, "Nil", true, function(dropdown)
+
+end)
+
+testSection:AddToggle("Airshotfunction", false, function(first)
+    print("airshot")
+end)
+
+testSection:AddToggle("Autopred", false, function(first)
+    print("Auto")
+end)
+
+testSection:AddButton("Aimlock", function(IhateGayPeople)
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Aimlock%20acsy"))()
+    print("button")
+end)
+
+testSection:AddTextbox("Prediction", nil, function(State)
+end)
+
+testSection:AddToggle("Airshotfunction", false, function(first)
+    print("airshot")
+end)
+
+testSection:AddToggle("Autopred", false, function(first)
+    print("Auto")
+end)
+
+local testSection = AimingTab:CreateSector("Silent", "right")
 
 testSection:AddButton("Silent aim", function(IhateGayPeople)
    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Streamble"))()
@@ -26,14 +54,14 @@ end)
 local AimingTab = Window:CreateTab("Rage")
 
 
-local testSection = AimingTab:CreateSector("First Section", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
+local testSection = AimingTab:CreateSector("Rages mode", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
 
-testSection:AddToggle("Toggle", false, function(first)
-    print("ejejejejejeje")
+testSection:AddToggle("just nothing", false, function(first)
+    print("of and on")
 end)
 
 testSection:AddButton("Blantant silent", function(IhateGayPeople)
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Silent%20aim"))()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Silent%20aim"))()
     print("button")
 end)
 
@@ -50,18 +78,24 @@ testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"},
 end)
 
 testSection:AddButton("antilock", function(IhateGayPeople)
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Anti%20lock"))()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Anti%20lock"))()
     print("button")
 end)
+
+local testSection = AimingTab:CreateSector("Misc", "right")
+
+testSection:AddButton("Tracers", function(IhateGayPeople)
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Lock%20acsy"))()
+    print("button")
+end)
+
+local AimingTab = Window:CreateTab("Visuals")
+
+
+local testSection = AimingTab:CreateSector("SOON", "left")
+
+local testSection = AimingTab:CreateSector("SOON", "right")
 
 ColorToggle:AddColorpicker(Color3.fromRGB(255, 0,0), function(ztx)
    
 end)
-
-local ToggleBind = testSection:AddToggle("Keybind w/Toggle", false, function(e)
-
-end)
-
-ToggleBind:AddKeybind()
-
-AimingTab:CreateConfigSystem("right") --this is the config system
