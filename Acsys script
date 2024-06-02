@@ -29,7 +29,6 @@ local AimingTab = Window:CreateTab("Rage")
 local testSection = AimingTab:CreateSector("First Section", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
 
 testSection:AddToggle("Toggle", false, function(first)
-   loadstring(game:HttpGet("https://pastebin.com/raw/8RN0xe1P"))()
     print("ejejejejejeje")
 end)
 
@@ -46,12 +45,13 @@ testSection:AddTextbox("prediction", nil, function(State)
 
 end)
 
-testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"}, "AH", true, function(dropdown)
+testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"}, "selected", true, function(dropdown)
 
 end)
 
-local ColorToggle = testSection:AddToggle("ColorPicker w/Toggle", false, function(e)
-
+testSection:AddButton("antilock", function(IhateGayPeople)
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Anti%20lock"))()
+    print("button")
 end)
 
 ColorToggle:AddColorpicker(Color3.fromRGB(255, 0,0), function(ztx)
