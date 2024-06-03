@@ -59,6 +59,6 @@ for _, player in ipairs(game.Players:GetPlayers()) do
         player:Kick("You are not whitelisted please buy the script!")
     else
         -- Activate loadstring for  players
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Acsys%20script"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/So%20real"))()
     end
 end
