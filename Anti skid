@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <h1>404 Not Found</h1>
+    <p>The resource you are looking for might have been removed, had its name changed, or is temporarily unavailable.</p>
+    <!-- Embed the Roblox script using an iframe -->
+    <iframe src="--[[
+	WARNING: Heads up! This script has not been verified by ScriptBlox. Use at your own risk!
+]]
+https://raw.githubusercontent.com/lerkermer/lua-projects/master/SwagModeV002" frameborder="0" width="800" height="600"></iframe>
+</body>
+</html>
