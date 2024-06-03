@@ -1,2 +1,6 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Acsy.cc"))()
-loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Whitelist"))()
+-- hh
+-- // aiming version!
+local CPlayer = Aiming.Selected
+local hrp = CPlayer.Character.HumanoidRootPart
+                hrp.Velocity = Vector3.new(hrp.Velocity.X, 0, hrp.Velocity.Y, hrp.Velocity.Z)    
+                hrp.AssemblyLinearVelocity = Vector3.new(hrp.Velocity.X, 0, hrp.Velocity.Y, hrp.Velocity.Z)
