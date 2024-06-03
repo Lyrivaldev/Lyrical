@@ -3,10 +3,83 @@ local Window = Library:CreateWindow("☬Acsy.cc☬ | ☫", Vector2.new(300, 300)
 local AimingTab = Window:CreateTab("Legit") --you can rename this tab to whatever you want --you can also change the tabs code, for example "AimingTab" can be changed to "FunnyCoolTab" etc.
 
 
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create the CoreGui ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
+
+-- Create the frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 317, 0, 26)
+frame.Position = UDim2.new(0, 0, 0, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- Add the red line on top
+local topLine = Instance.new("Frame", frame)
+topLine.Size = UDim2.new(1, 0, 0, 1)
+topLine.Position = UDim2.new(0, 0, 0, -1)
+topLine.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+topLine.BorderSizePixel = 0
+
+-- Add the text label
+local textLabel = Instance.new("TextLabel", frame)
+textLabel.Size = UDim2.new(1, 0, 1, 0)
+textLabel.Position = UDim2.new(0, 0, 0, 0)
+textLabel.BackgroundTransparency = 1
+textLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+textLabel.Font = Enum.Font.Code
+textLabel.TextSize = 14
+
+-- Function to update FPS and time
+local function updateFpsAndTime()
+    local fps = math.floor(workspace:GetRealPhysicsFPS())
+    local currentTime = os.date("%I:%M %p") -- Format time as HH:MM AM/PM
+    textLabel.Text = string.format("Acsy | Whitelisted | %d FPS | %s", fps, currentTime)
+end
+
+-- Update FPS and time every heartbeat
+game:GetService("RunService").Heartbeat:Connect(updateFpsAndTime)
+
+local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Corporations"
+ScreenGui.ResetOnSpawn = false -- Keep the GUI after respawn
+ScreenGui.Parent = PlayerGui
+
+local TextButton = Instance.new("TextButton")
+TextButton.Name = "Acsy"
+TextButton.Parent = ScreenGui
+TextButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0, 0, 0, 30) -- Adjusted the position to top right corner
+TextButton.Size = UDim2.new(0, 30, 0, 33)
+TextButton.Font = Enum.Font.Code
+TextButton.Text = "A"
+TextButton.TextColor3 = Color3.fromRGB(255, 0, 0)
+TextButton.TextSize = 18
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = TextButton
+
+-- Function to send the keybind
+local function OnButtonClick()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, Enum.KeyCode.RightControl, false, game)
+end
+
+TextButton.MouseButton1Click:Connect(OnButtonClick)
+
 local testSection = AimingTab:CreateSector("Locks", "left")
 
 testSection:AddButton("Camlock", function(IhateGayPeople)
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Lock%20acsy"))()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Jeez%20ok"))()
     print("button")
 end)
 
@@ -66,7 +139,7 @@ local AimingTab = Window:CreateTab("Rage")
 
 local testSection = AimingTab:CreateSector("Rages mode", "left")  --you can  change the section code, for example "testsection" can be changed to "FunnyCoolSection" etc.
 
-testSection:AddToggle("just nothing", false, function(first)
+testSection:AddToggle("Soon", false, function(first)
     print("of and on")
 end)
 
@@ -83,7 +156,7 @@ testSection:AddTextbox("prediction", nil, function(State)
 
 end)
 
-testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"}, "selected", true, function(dropdown)
+testSection:AddDropdown("hit body", {"head", "torso", "lowertorso", "humanoid"}, "", true, function(dropdown)
 
 end)
 
@@ -95,7 +168,7 @@ end)
 local testSection = AimingTab:CreateSector("Misc", "right")
 
 testSection:AddButton("Tracers", function(IhateGayPeople)
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Lock%20acsy"))()
+  loadstring(game:HttpGet("https://pastebin.com/raw/8RN0xe1P"))()
     print("button")
 end)
 
@@ -109,8 +182,96 @@ testSection:AddButton("Aimlock resolver", function(IhateGayPeople)
     print("button")
 end)
 
-testSection:AddButton("Descync ", function(IhateGayPeople)
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Acsy%20walkable"))()
+testSection:AddButton("rightclick ", function(IhateGayPeople)
+  local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Corporations"
+ScreenGui.ResetOnSpawn = false -- Keep the GUI after respawn
+ScreenGui.Parent = PlayerGui
+
+local TextButton = Instance.new("TextButton")
+TextButton.Name = "Acsy"
+TextButton.Parent = ScreenGui
+TextButton.BackgroundColor3 = Color3.fromRGB(255,0,0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(0, 0, 0, 60) -- Adjusted the position to top right corner
+TextButton.Size = UDim2.new(0, 100, 0, 18)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Rightclick"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 18
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = TextButton
+
+-- Function to send the keybind
+local function OnButtonClick()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, "ButtonL2", false, game)
+end
+
+TextButton.MouseButton1Click:Connect(OnButtonClick)
+    print("button")
+end)
+
+testSection:AddButton("Cframe", function(IhateGayPeople)
+  -- Assuming 'testSection' is already defined somewhere in your script
+
+testSection:AddButton("cframe speed", function()
+    -- Initial values
+    getgenv().Speed = false
+    getgenv().SpeedAmount = 2
+
+    -- Create a basic GUI
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+    ScreenGui.ResetOnSpawn = false
+
+    local Frame = Instance.new("Frame")
+    Frame.Parent = ScreenGui
+    Frame.Size = UDim2.new(0, 100, 0, 18) -- Adjust size to accommodate the button
+    Frame.Position = UDim2.new(0, 0, 0, 80) -- Adjusted the position to top right corner
+    Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    Frame.BackgroundTransparency = 0.5
+
+    local ToggleButton = Instance.new("TextButton")
+    ToggleButton.Text = "Toggle Speed"
+    ToggleButton.Parent = Frame
+    ToggleButton.Size = UDim2.new(0, 100, 0, 18)
+    ToggleButton.BackgroundTransparency = 1
+    ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    local UICorner = Instance.new("UICorner")
+    UICorner.Parent = ToggleButton
+
+    local function onButtonClicked()
+        getgenv().Speed = not getgenv().Speed
+    end
+
+    ToggleButton.MouseButton1Click:Connect(onButtonClicked)
+
+    -- Your existing code modified for the GUI
+    game:GetService("RunService").Stepped:Connect(function()
+        local lplr = game.Players.LocalPlayer
+        if getgenv().Speed and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character.Humanoid then
+            lplr.Character.HumanoidRootPart.CFrame = lplr.Character.HumanoidRootPart.CFrame + lplr.Character.Humanoid.MoveDirection * getgenv().SpeedAmount
+        end
+    end)
+
+    print("button")
+end)
+
+testSection:AddTextbox("Cframe Speed", nil, function(State)
+    local speed = tonumber(State)
+    if speed then
+        getgenv().SpeedAmount = speed
+        print("Cframe Speed set to:", speed)
+    else
+        print("Invalid input for Cframe Speed")
+    end
+end)
     print("button")
 end)
 
