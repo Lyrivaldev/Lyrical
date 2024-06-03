@@ -48,7 +48,17 @@ testSection:AddButton("Silent aim", function(IhateGayPeople)
     print("button")
 end)
 
+testSection:AddButton("Pc silent", function(IhateGayPeople)
+   loadstring(game:HttpGet("https://pastebin.com/raw/ywhqZBtU"))()
+    print("button")
+end)
+
 testSection:AddTextbox("Prediction", nil, function(State)
+end)
+
+testSection:AddButton("SilentResolver", function(IhateGayPeople)
+   loadstring(game:HttpGet("https://pastebin.com/raw/ZWnz9e2R"))()"))()
+    print("button")
 end)
 
 local AimingTab = Window:CreateTab("Rage")
@@ -86,6 +96,16 @@ local testSection = AimingTab:CreateSector("Misc", "right")
 
 testSection:AddButton("Tracers", function(IhateGayPeople)
   loadstring(game:HttpGet("https://raw.githubusercontent.com/Lyrivaldev/Lyrical/main/Lock%20acsy"))()
+    print("button")
+end)
+
+testSection:AddButton("Descync resolver", function(IhateGayPeople)
+  loadstring(game:HttpGet("https://pastebin.com/raw/iGdNydui"))()
+    print("button")
+end)
+
+testSection:AddButton("Aimlock resolver", function(IhateGayPeople)
+  loadstring(game:HttpGet("https://pastebin.com/raw/pQT4Db0d"))()
     print("button")
 end)
 
