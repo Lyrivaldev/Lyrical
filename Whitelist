@@ -1,558 +1,607 @@
---[[
-	ui-engine-v2
-	version 1.3a
-	by Singularity (V3rm @ King Singularity) (Discord @ Singularity#5490)
---]]
+local gui = Instance.new("ScreenGui")
+gui.Name = "CustomGUI"
+gui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+gui.ResetOnSpawn = false
 
-local ui_options = {
-	main_color = Color3.fromRGB(199, 110, 255),
-	min_size = Vector2.new(400, 300),
-	toggle_key = Enum.KeyCode.RightShift,
-	can_resize = true,
-}
+-- Main Frame
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 455, 0, 280)
+mainFrame.Position = UDim2.new(0.5, -227, 0.5, -140)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.Parent = gui
 
-do
-	local imgui = game:GetService("CoreGui"):FindFirstChild("imgui")
-	if imgui then imgui:Destroy() end
+local mainFrameStroke = Instance.new("UIStroke")
+mainFrameStroke.Color = Color3.fromRGB(255, 0, 0)
+mainFrameStroke.Parent = mainFrame
+
+local mainFrameCorner = Instance.new("UICorner")
+mainFrameCorner.CornerRadius = UDim.new(0, 8)
+mainFrameCorner.Parent = mainFrame
+
+-- Topbar
+local topbar = Instance.new("Frame")
+topbar.Size = UDim2.new(0, 455, 0, 20)
+topbar.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+topbar.Parent = mainFrame
+
+local topbarStroke = Instance.new("UIStroke")
+topbarStroke.Color = Color3.fromRGB(255, 0, 0)
+topbarStroke.Parent = topbar
+
+local topbarCorner = Instance.new("UICorner")
+topbarCorner.CornerRadius = UDim.new(0, 8)
+topbarCorner.Parent = topbar
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 1, 0)
+title.Text = "ZelexOnTop"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.Sarpanch
+title.TextSize = 14
+title.Parent = topbar
+
+-- Tabs
+local tabs = {"Main", "Visual", "Misc"}
+local tabFrames = {}
+
+for i, tabName in ipairs(tabs) do
+    local tabButton = Instance.new("TextButton")
+    tabButton.Size = UDim2.new(0, 150, 0, 20)
+    tabButton.Position = UDim2.new(0, (i-1)*150, 0, 20)
+    tabButton.Text = tabName
+    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    tabButton.Font = Enum.Font.Sarpanch
+    tabButton.TextSize = 14
+    tabButton.Parent = mainFrame
+
+    local tabButtonCorner = Instance.new("UICorner")
+    tabButtonCorner.CornerRadius = UDim.new(0, 8)
+    tabButtonCorner.Parent = tabButton
+
+    local tabFrame = Instance.new("ScrollingFrame")
+    tabFrame.Size = UDim2.new(1, 0, 1, -40)
+    tabFrame.Position = UDim2.new(0, 0, 0, 40)
+    tabFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    tabFrame.Visible = i == 1
+    tabFrame.CanvasSize = UDim2.new(0, 0, 2, 0) -- Adjust based on content
+    tabFrame.ScrollBarThickness = 6
+    tabFrame.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
+    tabFrame.Parent = mainFrame
+
+    local tabFrameCorner = Instance.new("UICorner")
+    tabFrameCorner.CornerRadius = UDim.new(0, 8)
+    tabFrameCorner.Parent = tabFrame
+
+    tabFrames[tabName] = tabFrame
+
+    tabButton.MouseButton1Click:Connect(function()
+        for _, frame in pairs(tabFrames) do
+            frame.Visible = false
+        end
+        tabFrame.Visible = true
+    end)
 end
 
-local imgui = Instance.new("ScreenGui")
-local Prefabs = Instance.new("Frame")
-local Label = Instance.new("TextLabel")
-local Window = Instance.new("ImageLabel")
-local Resizer = Instance.new("Frame")
-local Bar = Instance.new("Frame")
-local Toggle = Instance.new("ImageButton")
-local Base = Instance.new("ImageLabel")
-local Top = Instance.new("ImageLabel")
-local Tabs = Instance.new("Frame")
-local Title = Instance.new("TextLabel")
-local TabSelection = Instance.new("ImageLabel")
-local TabButtons = Instance.new("Frame")
-local UIListLayout = Instance.new("UIListLayout")
+-- Section Function
+local function createSection(parent, sectionTitle)
+    local section = Instance.new("Frame")
+    section.Size = UDim2.new(1, -10, 0, 30)
+    section.Position = UDim2.new(0, 5, 0, 0)
+    section.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    section.Parent = parent
+
+    local sectionCorner = Instance.new("UICorner")
+    sectionCorner.CornerRadius = UDim.new(0, 8)
+    sectionCorner.Parent = section
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, -10, 1, -10)
+    titleLabel.Position = UDim2.new(0, 5, 0, 5)
+    titleLabel.Text = sectionTitle
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Font = Enum.Font.Sarpanch
+    titleLabel.TextSize = 14
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Parent = section
+
+    return section
+end
+
+-- Toggle Function
+local function createToggle(parent, text, callback)
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(0, 100, 0, 25)
+    toggle.Text = text
+    toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    toggle.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    toggle.Font = Enum.Font.Sarpanch
+    toggle.TextSize = 14
+    toggle.Parent = parent
+
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(0, 8)
+    toggleCorner.Parent = toggle
+
+    local isOn = false
+    toggle.MouseButton1Click:Connect(function()
+        isOn = not isOn
+        toggle.Text = text .. (isOn and " ON" or " OFF")
+        callback(isOn)
+    end)
+end
+
+-- Button Function
+local function createButton(parent, text, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(0, 100, 0, 25)
+    button.Text = text
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    button.Font = Enum.Font.Sarpanch
+    button.TextSize = 14
+    button.Parent = parent
+
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 8)
+    buttonCorner.Parent = button
+
+    button.MouseButton1Click:Connect(callback)
+end
+
+-- Textbox Function
+local function createTextbox(parent, placeholderText, callback)
+    local textbox = Instance.new("TextBox")
+    textbox.Size = UDim2.new(0, 100, 0, 25)
+    textbox.PlaceholderText = placeholderText
+    textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textbox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    textbox.Font = Enum.Font.Sarpanch
+    textbox.TextSize = 14
+    textbox.PlaceholderColor3 = Color3.fromRGB(200, 200, 200)
+    textbox.Parent = parent
+
+    local textboxCorner = Instance.new("UICorner")
+    textboxCorner.CornerRadius = UDim.new(0, 8)
+    textboxCorner.Parent = textbox
+
+    textbox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            callback(textbox.Text)
+        end
+    end)
+end
+
+-- Keybind Function
+local function createKeybind(parent, key, callback)
+    local keybindButton = Instance.new("TextButton")
+    keybindButton.Size = UDim2.new(0, 100, 0, 25)
+    keybindButton.Text = "Keybind: " .. key
+    keybindButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    keybindButton.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    keybindButton.Font = Enum.Font.Sarpanch
+    keybindButton.TextSize = 14
+    keybindButton.Parent = parent
+
+    local keybindButtonCorner = Instance.new("UICorner")
+    keybindButtonCorner.CornerRadius = UDim.new(0, 8)
+    keybindButtonCorner.Parent = keybindButton
+
+    local userInputService = game:GetService("UserInputService")
+    userInputService.InputBegan:Connect(function(input, gameProcessed)
+        if not gameProcessed and input.KeyCode == Enum.KeyCode[key] then
+            callback()
+        end
+    end)
+end
+
+-- Adding UI Elements to Tab1 as an Example
+local section1 = createSection(tabFrames["Main"], "Dont turn off bug")
+section1.Position = UDim2.new(0, 0, 0, 10)
+createToggle(section1, "Camlock", function(state)
+    getgenv().Prediction = 0.135
+getgenv().Smoothness = 0.9
+getgenv().AimPart = "UpperTorso"
+getgenv().OldAimpart = "UpperTorso"
+getgenv().ShakeValue = 0
+getgenv().AutoPred = true
+
+local Tool = Instance.new("Tool")
+Tool.RequiresHandle = false
+Tool.Name = "Zelex cam"
+Tool.Parent = game.Players.LocalPlayer.Backpack
+
+local player = game.Players.LocalPlayer
+
+local function connectCharacterAdded()
+    player.CharacterAdded:Connect(onCharacterAdded)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+    Tool.Parent = game.Players.LocalPlayer.Backpack
+end)
+
+-- Variables (Service)
+
+local Players = game:GetService("Players")
+local RS = game:GetService("RunService")
+local WS = game:GetService("Workspace")
+local GS = game:GetService("GuiService")
+local SG = game:GetService("StarterGui")
+
+-- Variables (regular)
+
+local LP = Players.LocalPlayer
+local Mouse = LP:GetMouse()
+local Camera = WS.CurrentCamera
+local GetGuiInset = GS.GetGuiInset
+
+local AimlockState = true
+local Locked
+local Victim
+
+local SelectedKey = getgenv().Key
+local SelectedDisableKey = getgenv().DisableKey
+
+-- Notification function
+
+function Notify(tx)
+    SG:SetCore("SendNotification", {
+        Title = "Zelex",
+        Text = tx,
+        Duration = 5
+    })
+end
+
+-- Check if aimlock is loaded
+
+if getgenv().Loaded == true then
+    Notify("Loaded")
+    return
+end
+
+getgenv().Loaded = true
+
+-- FOV Circle
+
+local fov = Drawing.new("Circle")
+fov.Filled = false
+fov.Transparency = 1
+fov.Thickness = 1
+fov.Color = Color3.fromRGB(255, 255, 0)
+fov.NumSides = 1000
+
+-- Functions
+
+function update()
+    if getgenv().FOV == true then
+        if fov then
+            fov.Radius = getgenv().FOVSize * 2
+            fov.Visible = getgenv().ShowFOV
+            fov.Position = Vector2.new(Mouse.X, Mouse.Y + GetGuiInset(GS).Y)
+
+            return fov
+        end
+    end
+end
+
+function WTVP(arg)
+    return Camera:WorldToViewportPoint(arg)
+end
+
+function WTSP(arg)
+    return Camera.WorldToScreenPoint(Camera, arg)
+end
+
+function getClosest()
+    local closestPlayer
+    local shortestDistance = math.huge
+
+    for i, v in pairs(game.Players:GetPlayers()) do
+        local notKO = v.Character:WaitForChild("BodyEffects")["K.O"].Value ~= true
+        local notGrabbed = v.Character:FindFirstChild("GRABBING_COINSTRAINT") == nil
+
+        if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild(getgenv().AimPart) and notKO and notGrabbed then
+            local pos = Camera:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+            local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
+
+            if (getgenv().FOV) then
+                if (fov.Radius > magnitude and magnitude < shortestDistance) then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            else
+                if (magnitude < shortestDistance) then
+                    closestPlayer = v
+                    shortestDistance = magnitude
+                end
+            end
+        end
+    end
+    return closestPlayer
+end
+
+-- Checks if key is down
+
+Tool.Activated:Connect(function()
+    if AimlockState == true then
+        Locked = not Locked
+        if Locked then
+            Victim = getClosest()
+
+            Notify("Locked onto: "..tostring(Victim.Character.Humanoid.DisplayName))
+        else
+            if Victim ~= nil then
+                Victim = nil
+
+                Notify("Unlocked!")
+            end
+        end
+    else
+        Notify("Aimlock is not enabled!")
+    end
+end)
+
+-- Loop update FOV and loop camera lock onto target
+
+RS.RenderStepped:Connect(function()
+    update()
+    if AimlockState == true then
+        if Victim ~= nil then
+            local shakeOffset = Vector3.new(
+                math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+                math.random(-getgenv().ShakeValue, getgenv().ShakeValue),
+                math.random(-getgenv().ShakeValue, getgenv().ShakeValue)
+            ) * 0.1
+local LookPosition = CFrame.new(Camera.CFrame.p, Victim.Character[getgenv().AimPart].Position + (Vector3.new(Victim.Character.HumanoidRootPart.Velocity.X,Victim.Character.HumanoidRootPart.AssemblyAngularVelocity.Y*0.5,Victim.Character.HumanoidRootPart.Velocity.Z)*getgenv().Prediction))+shakeOffset
+            Camera.CFrame = Camera.CFrame:Lerp(LookPosition, getgenv().Smoothness)        
+    end
+end
+end)
+
+for _, con in next, getconnections(workspace.CurrentCamera.Changed) do
+  task.wait()
+    con:Disable()
+end
+for _, con in next, getconnections(workspace.CurrentCamera:GetPropertyChangedSignal("CFrame")) do
+   task.wait()
+    con:Disable()
+end
+
+
+while task.wait() do
+if getgenv().AutoPred == true then
+pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+             split = string.split(pingvalue,'(')
+             ping = tonumber(split[1])
+ if ping <200 then
+        getgenv().Prediction = 0.1973432432343325
+    elseif ping < 150 then
+        getgenv().Prediction = 0.1922
+    elseif ping < 90 then
+        getgenv().Prediction = 0.16
+    elseif ping < 80 then
+        getgenv().Prediction = 0.169
+    elseif ping < 70 then
+        getgenv().Prediction = 0.1355
+    elseif ping < 50 then
+        getgenv().Prediction = 0.125
+    elseif ping < 40 then
+        getgenv().Prediction = 0.12
+    elseif ping < 30 then
+        getgenv().Prediction = 0.12
+    end
+end
+end
+    print("Toggle state: " .. tostring(state))
+end)
+
+local section2 = createSection(tabFrames["Main"], "Fov turnoff")
+section2.Position = UDim2.new(0, 0, 0, 50)
+createButton(section2, "Silent aim", function() 
+    getgenv().HitPart = "HumanoidRootPart"
+getgenv().Prediction = 0.1485436
+getgenv().Enabled = true
+
+-- fov settings
+getgenv().ShowFOV = false
+getgenv().Filled = false
+getgenv().FOVSize = 150
+getgenv().FOVTransparency = 1
+getgenv().FOVThickness = 2.0
+getgenv().FOVColor = Color3.new(0,0,0)
+
+SilentAimFOVCircle = Drawing.new("Circle")
+SilentAimFOVCircle.Color = getgenv().FOVColor
+SilentAimFOVCircle.Visible = getgenv().ShowFOV
+SilentAimFOVCircle.Filled = getgenv().Filled
+SilentAimFOVCircle.Radius = getgenv().FOVSize
+SilentAimFOVCircle.Transparency = getgenv().FOVTransparency
+SilentAimFOVCircle.Thickness = getgenv().FOVThickness
+
+Players = game:GetService("Players")
+Camera = workspace.CurrentCamera
+
+SilentAimFOVCircle.Position = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 2  - (game:GetService("GuiService"):GetGuiInset().Y/2))
+
+local function getClosestPlayerToCenter()
+    local centerScreenPosition = Vector2.new(workspace.CurrentCamera.ViewportSize.X / 2, workspace.CurrentCamera.ViewportSize.Y / 2  - (game:GetService("GuiService"):GetGuiInset().Y/2))
+    local closestPlayer
+    local closestDistance = math.huge
+    local localPlayer = game.Players.LocalPlayer
+
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player ~= localPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local playerRootPart = player.Character.HumanoidRootPart
+            local screenPosition, onScreen = workspace.CurrentCamera:WorldToViewportPoint(playerRootPart.Position)
+
+            if onScreen then
+                local distance = (centerScreenPosition - Vector2.new(screenPosition.X, screenPosition.Y)).Magnitude
+
+                if distance < closestDistance and distance <= SilentAimFOVCircle.Radius then
+                    closestPlayer = player
+                    closestDistance = distance
+                end
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+
+local SilentTarget = nil
+
+game:GetService("RunService").RenderStepped:Connect(function()
+    SilentTarget = getClosestPlayerToCenter()
+end)
+
+local mt = getrawmetatable(game)
+local old = mt.__namecall
+setreadonly(mt, false)
+mt.__namecall = newcclosure(function(...)
+    local args = {...}
+    if getgenv().Enabled and SilentTarget~=nil and SilentTarget.Character and getnamecallmethod() == "FireServer" and args[2] == "UpdateMousePos" then
+            args[3] = SilentTarget.Character[getgenv().HitPart].Position + (SilentTarget.Character[getgenv().HitPart].Velocity*getgenv().Prediction)
+        return old(unpack(args))
+    end
+    return old(...)
+end)
+
+    print("Button clicked")
+end)
+
+local section3 = createSection(tabFrames["Main"], "camlock prediction")
+section3.Position = UDim2.new(0, 0, 0, 90)
+createTextbox(section3, "Prediction", function(text) 
+    print("prediction input: " .. text)
+end)
+
+local section4 = createSection(tabFrames["Main"], "silent aim")
+section4.Position = UDim2.new(0, 0, 0, 130)
+createTextbox(section4, "Prediction", function(text) 
+    print("prediction input: " .. text)
+end)
+
+local section1 = createSection(tabFrames["Misc"], "Rightclick made by lyrical")
+section1.Position = UDim2.new(0, 0, 0, 10)
+createButton(section1, "RightClick", function() 
+    local Player = game.Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "Corporations"
+ScreenGui.ResetOnSpawn = false -- Keep the GUI after respawn
+ScreenGui.Parent = PlayerGui
+
+local TextButton = Instance.new("TextButton")
+TextButton.Name = "Zelex"
+TextButton.Parent = ScreenGui
+TextButton.BackgroundColor3 = Color3.fromRGB(255,0,0)
+TextButton.BackgroundTransparency = 0.5
+TextButton.BorderSizePixel = 0
+TextButton.Position = UDim2.new(1, -120, 0, 10) -- Adjusted the position to top right corner
+TextButton.Size = UDim2.new(0, 100, 0, 18)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Rightclick"
+TextButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextSize = 18
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = TextButton
+
+-- Function to send the keybind
+local function OnButtonClick()
+    local vim = game:GetService("VirtualInputManager")
+    vim:SendKeyEvent(true, "ButtonL2", false, game)
+end
+
+TextButton.MouseButton1Click:Connect(OnButtonClick)
+    print("Button clicked")
+end)
+
+local section2 = createSection(tabFrames["Misc"], "Cframe made by lyrical")
+section2.Position = UDim2.new(0, 0, 0, 50)
+createButton(section2, "Cframe", function() 
+    -- Initial values
+getgenv().Speed = false
+getgenv().SpeedAmount = 2
+
+-- Create a basic GUI
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ResetOnSpawn = false
+
 local Frame = Instance.new("Frame")
-local Tab = Instance.new("Frame")
-local UIListLayout_2 = Instance.new("UIListLayout")
-local TextBox = Instance.new("TextBox")
-local TextBox_Roundify_4px = Instance.new("ImageLabel")
-local Slider = Instance.new("ImageLabel")
-local Title_2 = Instance.new("TextLabel")
-local Indicator = Instance.new("ImageLabel")
-local Value = Instance.new("TextLabel")
-local TextLabel = Instance.new("TextLabel")
-local TextLabel_2 = Instance.new("TextLabel")
-local Circle = Instance.new("ImageLabel")
-local UIListLayout_3 = Instance.new("UIListLayout")
-local Dropdown = Instance.new("TextButton")
-local Indicator_2 = Instance.new("ImageLabel")
-local Box = Instance.new("ImageButton")
-local Objects = Instance.new("ScrollingFrame")
-local UIListLayout_4 = Instance.new("UIListLayout")
-local TextButton_Roundify_4px = Instance.new("ImageLabel")
-local TabButton = Instance.new("TextButton")
-local TextButton_Roundify_4px_2 = Instance.new("ImageLabel")
-local Folder = Instance.new("ImageLabel")
-local Button = Instance.new("TextButton")
-local TextButton_Roundify_4px_3 = Instance.new("ImageLabel")
-local Toggle_2 = Instance.new("ImageLabel")
-local Objects_2 = Instance.new("Frame")
-local UIListLayout_5 = Instance.new("UIListLayout")
-local HorizontalAlignment = Instance.new("Frame")
-local UIListLayout_6 = Instance.new("UIListLayout")
-local Console = Instance.new("ImageLabel")
-local ScrollingFrame = Instance.new("ScrollingFrame")
-local Source = Instance.new("TextBox")
-local Comments = Instance.new("TextLabel")
-local Globals = Instance.new("TextLabel")
-local Keywords = Instance.new("TextLabel")
-local RemoteHighlight = Instance.new("TextLabel")
-local Strings = Instance.new("TextLabel")
-local Tokens = Instance.new("TextLabel")
-local Numbers = Instance.new("TextLabel")
-local Info = Instance.new("TextLabel")
-local Lines = Instance.new("TextLabel")
-local ColorPicker = Instance.new("ImageLabel")
-local Palette = Instance.new("ImageLabel")
-local Indicator_3 = Instance.new("ImageLabel")
-local Sample = Instance.new("ImageLabel")
-local Saturation = Instance.new("ImageLabel")
-local Indicator_4 = Instance.new("Frame")
-local Switch = Instance.new("TextButton")
-local TextButton_Roundify_4px_4 = Instance.new("ImageLabel")
-local Title_3 = Instance.new("TextLabel")
-local Button_2 = Instance.new("TextButton")
-local TextButton_Roundify_4px_5 = Instance.new("ImageLabel")
-local DropdownButton = Instance.new("TextButton")
-local Keybind = Instance.new("ImageLabel")
-local Title_4 = Instance.new("TextLabel")
-local Input = Instance.new("TextButton")
-local Input_Roundify_4px = Instance.new("ImageLabel")
-local Windows = Instance.new("Frame")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0, 100, 0, 18) -- Adjust size to accommodate the button
+Frame.Position = UDim2.new(1, -120, 0, 35) -- Adjusted the position to top right corner
+Frame.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+Frame.BackgroundTransparency = 0.5
 
-imgui.Name = "imgui"
-imgui.Parent = game:GetService("CoreGui")
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Text = "Toggle Speed"
+ToggleButton.Parent = Frame
+ToggleButton.Size = UDim2.new(0, 100, 0, 18)
+ToggleButton.BackgroundTransparency = 1
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 
-Prefabs.Name = "Prefabs"
-Prefabs.Parent = imgui
-Prefabs.BackgroundColor3 = Color3.new(1, 1, 1)
-Prefabs.Size = UDim2.new(0, 100, 0, 100)
-Prefabs.Visible = false
+local UICorner = Instance.new("UICorner")
+UICorner.Parent = ToggleButton
 
+local function onButtonClicked()
+    getgenv().Speed = not getgenv().Speed
+end
 
-Label.Name = "Label"
-Label.Parent = Prefabs
-Label.BackgroundColor3 = Color3.new(1, 1, 1)
-Label.BackgroundTransparency = 1
-Label.Size = UDim2.new(0, 200, 0, 20)
-Label.Font = Enum.Font.GothamSemibold
-Label.Text = "Hello, world 123"
-Label.TextColor3 = Color3.new(1, 1, 1)
-Label.TextSize = 14
-Label.TextXAlignment = Enum.TextXAlignment.Left
+ToggleButton.MouseButton1Click:Connect(onButtonClicked)
 
-Window.Name = "Window"
-Window.Parent = Prefabs
-Window.Active = true
-Window.BackgroundColor3 = Color3.new(1, 1, 1)
-Window.BackgroundTransparency = 1
-Window.ClipsDescendants = true
-Window.Position = UDim2.new(0, 20, 0, 20)
-Window.Selectable = true
-Window.Size = UDim2.new(0, 200, 0, 200)
-Window.Image = "rbxassetid://2851926732"
-Window.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
-Window.ScaleType = Enum.ScaleType.Slice
-Window.SliceCenter = Rect.new(12, 12, 12, 12)
+-- Your existing code modified for the GUI
+game:GetService("RunService").Stepped:Connect(function()
+    local lplr = game.Players.LocalPlayer
+    if getgenv().Speed and lplr.Character and lplr.Character:FindFirstChild("HumanoidRootPart") and lplr.Character.Humanoid then
+        lplr.Character.HumanoidRootPart.CFrame = lplr.Character.HumanoidRootPart.CFrame + lplr.Character.Humanoid.MoveDirection * getgenv().SpeedAmount
+    end
+end)
+    print("Button clicked")
+end)
 
-Resizer.Name = "Resizer"
-Resizer.Parent = Window
-Resizer.Active = true
-Resizer.BackgroundColor3 = Color3.new(1, 1, 1)
-Resizer.BackgroundTransparency = 1
-Resizer.BorderSizePixel = 0
-Resizer.Position = UDim2.new(1, -20, 1, -20)
-Resizer.Size = UDim2.new(0, 20, 0, 20)
+local section3 = createSection(tabFrames["Misc"], "macro made by lyrical")
+section3.Position = UDim2.new(0, 0, 0, 90)
+createButton(section3, "fake macro", function() 
+    -- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "ToggleMacroGui"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-Bar.Name = "Bar"
-Bar.Parent = Window
-Bar.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-Bar.BorderSizePixel = 0
-Bar.Position = UDim2.new(0, 0, 0, 5)
-Bar.Size = UDim2.new(1, 0, 0, 15)
+-- Create Toggle Button
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 100, 0, 30) -- Adjusted size
+toggleButton.Position = UDim2.new(1, -110, 0, 10) -- Positioned at top right corner with a small margin
+toggleButton.Text = "Toggle Macro"
+toggleButton.Font = Enum.Font.SourceSansBold -- Set font to BuilderSansExtraBold
+toggleButton.TextColor3 = Color3.new(1, 1, 1) -- Set text color to white
+toggleButton.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1) -- Set background color to dark
+toggleButton.Parent = screenGui
 
-Toggle.Name = "Toggle"
-Toggle.Parent = Bar
-Toggle.BackgroundColor3 = Color3.new(1, 1, 1)
-Toggle.BackgroundTransparency = 1
-Toggle.Position = UDim2.new(0, 5, 0, -2)
-Toggle.Rotation = 90
-Toggle.Size = UDim2.new(0, 20, 0, 20)
-Toggle.ZIndex = 2
-Toggle.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
+-- Create UI corner
+local uiCorner = Instance.new("UICorner")
+uiCorner.CornerRadius = UDim.new(0, 5) -- Rounded corners
+uiCorner.Parent = toggleButton
 
-Base.Name = "Base"
-Base.Parent = Bar
-Base.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-Base.BorderSizePixel = 0
-Base.Position = UDim2.new(0, 0, 0.800000012, 0)
-Base.Size = UDim2.new(1, 0, 0, 10)
-Base.Image = "rbxassetid://2851926732"
-Base.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-Base.ScaleType = Enum.ScaleType.Slice
-Base.SliceCenter = Rect.new(12, 12, 12, 12)
+-- Create Variables
+local macroEnabled = false
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local runService = game:GetService("RunService")
+local connection
+local spinSpeed = 20 -- Default spin speed
 
-Top.Name = "Top"
-Top.Parent = Bar
-Top.BackgroundColor3 = Color3.new(1, 1, 1)
-Top.BackgroundTransparency = 1
-Top.Position = UDim2.new(0, 0, 0, -5)
-Top.Size = UDim2.new(1, 0, 0, 10)
-Top.Image = "rbxassetid://2851926732"
-Top.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-Top.ScaleType = Enum.ScaleType.Slice
-Top.SliceCenter = Rect.new(12, 12, 12, 12)
-
-Tabs.Name = "Tabs"
-Tabs.Parent = Window
-Tabs.BackgroundColor3 = Color3.new(1, 1, 1)
-Tabs.BackgroundTransparency = 1
-Tabs.Position = UDim2.new(0, 15, 0, 60)
-Tabs.Size = UDim2.new(1, -30, 1, -60)
-
-Title.Name = "Title"
-Title.Parent = Window
-Title.BackgroundColor3 = Color3.new(1, 1, 1)
-Title.BackgroundTransparency = 1
-Title.Position = UDim2.new(0, 30, 0, 3)
-Title.Size = UDim2.new(0, 200, 0, 20)
-Title.Font = Enum.Font.GothamBold
-Title.Text = "Gamer Time"
-Title.TextColor3 = Color3.new(1, 1, 1)
-Title.TextSize = 14
-Title.TextXAlignment = Enum.TextXAlignment.Left
-
-TabSelection.Name = "TabSelection"
-TabSelection.Parent = Window
-TabSelection.BackgroundColor3 = Color3.new(1, 1, 1)
-TabSelection.BackgroundTransparency = 1
-TabSelection.Position = UDim2.new(0, 15, 0, 30)
-TabSelection.Size = UDim2.new(1, -30, 0, 25)
-TabSelection.Visible = false
-TabSelection.Image = "rbxassetid://2851929490"
-TabSelection.ImageColor3 = Color3.new(0.145098, 0.14902, 0.156863)
-TabSelection.ScaleType = Enum.ScaleType.Slice
-TabSelection.SliceCenter = Rect.new(4, 4, 4, 4)
-
-TabButtons.Name = "TabButtons"
-TabButtons.Parent = TabSelection
-TabButtons.BackgroundColor3 = Color3.new(1, 1, 1)
-TabButtons.BackgroundTransparency = 1
-TabButtons.Size = UDim2.new(1, 0, 1, 0)
-
-UIListLayout.Parent = TabButtons
-UIListLayout.FillDirection = Enum.FillDirection.Horizontal
-UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout.Padding = UDim.new(0, 2)
-
-Frame.Parent = TabSelection
-Frame.BackgroundColor3 = Color3.new(0.12549, 0.227451, 0.372549)
-Frame.BorderColor3 = Color3.new(0.105882, 0.164706, 0.207843)
-Frame.BorderSizePixel = 0
-Frame.Position = UDim2.new(0, 0, 1, 0)
-Frame.Size = UDim2.new(1, 0, 0, 2)
-
-Tab.Name = "Tab"
-Tab.Parent = Prefabs
-Tab.BackgroundColor3 = Color3.new(1, 1, 1)
-Tab.BackgroundTransparency = 1
-Tab.Size = UDim2.new(1, 0, 1, 0)
-Tab.Visible = false
-
-UIListLayout_2.Parent = Tab
-UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_2.Padding = UDim.new(0, 5)
-
-TextBox.Parent = Prefabs
-TextBox.BackgroundColor3 = Color3.new(1, 1, 1)
-TextBox.BackgroundTransparency = 1
-TextBox.BorderSizePixel = 0
-TextBox.Size = UDim2.new(1, 0, 0, 20)
-TextBox.ZIndex = 2
-TextBox.Font = Enum.Font.GothamSemibold
-TextBox.PlaceholderColor3 = Color3.new(0.698039, 0.698039, 0.698039)
-TextBox.PlaceholderText = "Input Text"
-TextBox.Text = ""
-TextBox.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-TextBox.TextSize = 14
-
-TextBox_Roundify_4px.Name = "TextBox_Roundify_4px"
-TextBox_Roundify_4px.Parent = TextBox
-TextBox_Roundify_4px.BackgroundColor3 = Color3.new(1, 1, 1)
-TextBox_Roundify_4px.BackgroundTransparency = 1
-TextBox_Roundify_4px.Size = UDim2.new(1, 0, 1, 0)
-TextBox_Roundify_4px.Image = "rbxassetid://2851929490"
-TextBox_Roundify_4px.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-TextBox_Roundify_4px.ScaleType = Enum.ScaleType.Slice
-TextBox_Roundify_4px.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Slider.Name = "Slider"
-Slider.Parent = Prefabs
-Slider.BackgroundColor3 = Color3.new(1, 1, 1)
-Slider.BackgroundTransparency = 1
-Slider.Position = UDim2.new(0, 0, 0.178571433, 0)
-Slider.Size = UDim2.new(1, 0, 0, 20)
-Slider.Image = "rbxassetid://2851929490"
-Slider.ImageColor3 = Color3.new(0.145098, 0.14902, 0.156863)
-Slider.ScaleType = Enum.ScaleType.Slice
-Slider.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Title_2.Name = "Title"
-Title_2.Parent = Slider
-Title_2.BackgroundColor3 = Color3.new(1, 1, 1)
-Title_2.BackgroundTransparency = 1
-Title_2.Position = UDim2.new(0.5, 0, 0.5, -10)
-Title_2.Size = UDim2.new(0, 0, 0, 20)
-Title_2.ZIndex = 2
-Title_2.Font = Enum.Font.GothamBold
-Title_2.Text = "Slider"
-Title_2.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-Title_2.TextSize = 14
-
-Indicator.Name = "Indicator"
-Indicator.Parent = Slider
-Indicator.BackgroundColor3 = Color3.new(1, 1, 1)
-Indicator.BackgroundTransparency = 1
-Indicator.Size = UDim2.new(0, 0, 0, 20)
-Indicator.Image = "rbxassetid://2851929490"
-Indicator.ImageColor3 = Color3.new(0.254902, 0.262745, 0.278431)
-Indicator.ScaleType = Enum.ScaleType.Slice
-Indicator.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Value.Name = "Value"
-Value.Parent = Slider
-Value.BackgroundColor3 = Color3.new(1, 1, 1)
-Value.BackgroundTransparency = 1
-Value.Position = UDim2.new(1, -55, 0.5, -10)
-Value.Size = UDim2.new(0, 50, 0, 20)
-Value.Font = Enum.Font.GothamBold
-Value.Text = "0%"
-Value.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-Value.TextSize = 14
-
-TextLabel.Parent = Slider
-TextLabel.BackgroundColor3 = Color3.new(1, 1, 1)
-TextLabel.BackgroundTransparency = 1
-TextLabel.Position = UDim2.new(1, -20, -0.75, 0)
-TextLabel.Size = UDim2.new(0, 26, 0, 50)
-TextLabel.Font = Enum.Font.GothamBold
-TextLabel.Text = "]"
-TextLabel.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
-TextLabel.TextSize = 14
-
-TextLabel_2.Parent = Slider
-TextLabel_2.BackgroundColor3 = Color3.new(1, 1, 1)
-TextLabel_2.BackgroundTransparency = 1
-TextLabel_2.Position = UDim2.new(1, -65, -0.75, 0)
-TextLabel_2.Size = UDim2.new(0, 26, 0, 50)
-TextLabel_2.Font = Enum.Font.GothamBold
-TextLabel_2.Text = "["
-TextLabel_2.TextColor3 = Color3.new(0.627451, 0.627451, 0.627451)
-TextLabel_2.TextSize = 14
-
-Circle.Name = "Circle"
-Circle.Parent = Prefabs
-Circle.BackgroundColor3 = Color3.new(1, 1, 1)
-Circle.BackgroundTransparency = 1
-Circle.Image = "rbxassetid://266543268"
-Circle.ImageTransparency = 0.5
-
-UIListLayout_3.Parent = Prefabs
-UIListLayout_3.FillDirection = Enum.FillDirection.Horizontal
-UIListLayout_3.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_3.Padding = UDim.new(0, 20)
-
-Dropdown.Name = "Dropdown"
-Dropdown.Parent = Prefabs
-Dropdown.BackgroundColor3 = Color3.new(1, 1, 1)
-Dropdown.BackgroundTransparency = 1
-Dropdown.BorderSizePixel = 0
-Dropdown.Position = UDim2.new(-0.055555556, 0, 0.0833333284, 0)
-Dropdown.Size = UDim2.new(0, 200, 0, 20)
-Dropdown.ZIndex = 2
-Dropdown.Font = Enum.Font.GothamBold
-Dropdown.Text = "      Dropdown"
-Dropdown.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-Dropdown.TextSize = 14
-Dropdown.TextXAlignment = Enum.TextXAlignment.Left
-
-Indicator_2.Name = "Indicator"
-Indicator_2.Parent = Dropdown
-Indicator_2.BackgroundColor3 = Color3.new(1, 1, 1)
-Indicator_2.BackgroundTransparency = 1
-Indicator_2.Position = UDim2.new(0.899999976, -10, 0.100000001, 0)
-Indicator_2.Rotation = -90
-Indicator_2.Size = UDim2.new(0, 15, 0, 15)
-Indicator_2.ZIndex = 2
-Indicator_2.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4744658743"
-
-Box.Name = "Box"
-Box.Parent = Dropdown
-Box.BackgroundColor3 = Color3.new(1, 1, 1)
-Box.BackgroundTransparency = 1
-Box.Position = UDim2.new(0, 0, 0, 25)
-Box.Size = UDim2.new(1, 0, 0, 150)
-Box.ZIndex = 3
-Box.Image = "rbxassetid://2851929490"
-Box.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
-Box.ScaleType = Enum.ScaleType.Slice
-Box.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Objects.Name = "Objects"
-Objects.Parent = Box
-Objects.BackgroundColor3 = Color3.new(1, 1, 1)
-Objects.BackgroundTransparency = 1
-Objects.BorderSizePixel = 0
-Objects.Size = UDim2.new(1, 0, 1, 0)
-Objects.ZIndex = 3
-Objects.CanvasSize = UDim2.new(0, 0, 0, 0)
-Objects.ScrollBarThickness = 8
-
-UIListLayout_4.Parent = Objects
-UIListLayout_4.SortOrder = Enum.SortOrder.LayoutOrder
-
-TextButton_Roundify_4px.Name = "TextButton_Roundify_4px"
-TextButton_Roundify_4px.Parent = Dropdown
-TextButton_Roundify_4px.BackgroundColor3 = Color3.new(1, 1, 1)
-TextButton_Roundify_4px.BackgroundTransparency = 1
-TextButton_Roundify_4px.Size = UDim2.new(1, 0, 1, 0)
-TextButton_Roundify_4px.Image = "rbxassetid://2851929490"
-TextButton_Roundify_4px.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-TextButton_Roundify_4px.ScaleType = Enum.ScaleType.Slice
-TextButton_Roundify_4px.SliceCenter = Rect.new(4, 4, 4, 4)
-
-TabButton.Name = "TabButton"
-TabButton.Parent = Prefabs
-TabButton.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-TabButton.BackgroundTransparency = 1
-TabButton.BorderSizePixel = 0
-TabButton.Position = UDim2.new(0.185185179, 0, 0, 0)
-TabButton.Size = UDim2.new(0, 71, 0, 20)
-TabButton.ZIndex = 2
-TabButton.Font = Enum.Font.GothamSemibold
-TabButton.Text = "Test tab"
-TabButton.TextColor3 = Color3.new(0.784314, 0.784314, 0.784314)
-TabButton.TextSize = 14
-
-TextButton_Roundify_4px_2.Name = "TextButton_Roundify_4px"
-TextButton_Roundify_4px_2.Parent = TabButton
-TextButton_Roundify_4px_2.BackgroundColor3 = Color3.new(1, 1, 1)
-TextButton_Roundify_4px_2.BackgroundTransparency = 1
-TextButton_Roundify_4px_2.Size = UDim2.new(1, 0, 1, 0)
-TextButton_Roundify_4px_2.Image = "rbxassetid://2851929490"
-TextButton_Roundify_4px_2.ImageColor3 = Color3.new(0.203922, 0.207843, 0.219608)
-TextButton_Roundify_4px_2.ScaleType = Enum.ScaleType.Slice
-TextButton_Roundify_4px_2.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Folder.Name = "Folder"
-Folder.Parent = Prefabs
-Folder.BackgroundColor3 = Color3.new(1, 1, 1)
-Folder.BackgroundTransparency = 1
-Folder.Position = UDim2.new(0, 0, 0, 50)
-Folder.Size = UDim2.new(1, 0, 0, 20)
-Folder.Image = "rbxassetid://2851929490"
-Folder.ImageColor3 = Color3.new(0.0823529, 0.0862745, 0.0901961)
-Folder.ScaleType = Enum.ScaleType.Slice
-Folder.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Button.Name = "Button"
-Button.Parent = Folder
-Button.BackgroundColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-Button.BackgroundTransparency = 1
-Button.BorderSizePixel = 0
-Button.Size = UDim2.new(1, 0, 0, 20)
-Button.ZIndex = 2
-Button.Font = Enum.Font.GothamSemibold
-Button.Text = "      Folder"
-Button.TextColor3 = Color3.new(1, 1, 1)
-Button.TextSize = 14
-Button.TextXAlignment = Enum.TextXAlignment.Left
-
-TextButton_Roundify_4px_3.Name = "TextButton_Roundify_4px"
-TextButton_Roundify_4px_3.Parent = Button
-TextButton_Roundify_4px_3.BackgroundColor3 = Color3.new(1, 1, 1)
-TextButton_Roundify_4px_3.BackgroundTransparency = 1
-TextButton_Roundify_4px_3.Size = UDim2.new(1, 0, 1, 0)
-TextButton_Roundify_4px_3.Image = "rbxassetid://2851929490"
-TextButton_Roundify_4px_3.ImageColor3 = Color3.new(0.160784, 0.290196, 0.478431)
-TextButton_Roundify_4px_3.ScaleType = Enum.ScaleType.Slice
-TextButton_Roundify_4px_3.SliceCenter = Rect.new(4, 4, 4, 4)
-
-Toggle_2.Name = "Toggle"
-Toggle_2.Parent = Button
-Toggle_2.BackgroundColor3 = Color3.new(1, 1, 1)
-Toggle_2.BackgroundTransparency = 1
-Toggle_2.Position = UDim2.new(0, 5, 0, 0)
-Toggle_2.Size = UDim2.new(0, 20, 0, 20)
-Toggle_2.Image = "https://www.roblox.com/Thumbs/Asset.ashx?width=420&height=420&assetId=4731371541"
-
-Objects_2.Name = "Objects"
-Objects_2.Parent = Folder
-Objects_2.BackgroundColor3 = Color3.new(1, 1, 1)
-Objects_2.BackgroundTransparency = 1
-Objects_2.Position = UDim2.new(0, 10, 0, 25)
-Objects_2.Size = UDim2.new(1, -10, 1, -25)
-Objects_2.Visible = false
-
-UIListLayout_5.Parent = Objects_2
-UIListLayout_5.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_5.Padding = UDim.new(0, 5)
-
-HorizontalAlignment.Name = "HorizontalAlignment"
-HorizontalAlignment.Parent = Prefabs
-HorizontalAlignment.BackgroundColor3 = Color3.new(1, 1, 1)
-HorizontalAlignment.BackgroundTransparency = 1
-HorizontalAlignment.Size = UDim2.new(1, 0, 0, 20)
-
-UIListLayout_6.Parent = HorizontalAlignment
-UIListLayout_6.FillDirection = Enum.FillDirection.Horizontal
-UIListLayout_6.SortOrder = Enum.SortOrder.LayoutOrder
-UIListLayout_6.Padding = UDim.new(0, 5)
-
-Console.Name = "Console"
-Console.Parent = Prefabs
-Console.BackgroundColor3 = Color3.new(1, 1, 1)
-Console.BackgroundTransparency = 1
-Console.Size = UDim2.new(1, 0, 0, 200)
-Console.Image = "rbxassetid://2851928141"
-Console.ImageColor3 = Color3.new(0.129412, 0.133333, 0.141176)
-Console.ScaleType = Enum.ScaleType.Slice
-Console.SliceCenter = Rect.new(8, 8, 8, 8)
-
-ScrollingFrame.Parent = Console
-ScrollingFrame.BackgroundColor3 = Color3.new(1, 1, 1)
-ScrollingFrame.BackgroundTransparency = 1
-ScrollingFrame.BorderSizePixel = 0
-ScrollingFrame.Size = UDim2.new(1, 0, 1, 1)
-ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-ScrollingFrame.ScrollBarThickness = 4
-
-Source.Name = "Source"
-Source.Parent = ScrollingFrame
-Source.BackgroundColor3 = Color3.new(1, 1, 1)
-Source.BackgroundTransparency = 1
-Source.Position = UDim2.new(0, 40, 0, 0)
-Source.Size = UDim2.new(1, -40, 0, 10000)
-Source.ZIndex = 3
-Source.ClearTextOnFocus = false
-Source.Font = Enum.Font.Code
-Source.MultiLine = true
-Source.PlaceholderColor3 = Color3.new(0.8, 0.8, 0.8)
-Source.Text = ""
-Source.TextColor3 = Color3.new(1, 1, 1)
-Source.TextSize = 15
-Source.TextStrokeColor3 = Color3.new(1, 1, 1)
-Source.TextWrapped = true
-Source.TextXAlignment = Enum.TextXAlignment.Left
-Source.TextYAlignment = Enum.TextYAlignment.Top
-
-Comments.Name = "Comments"
-Comments.Parent = Source
-Comments.BackgroundColor3 = Color3.new(1, 1, 1)
-Comments.BackgroundTransparency = 1
-Comments.Size = UDim2.new(1, 0, 1, 0)
-Comments.ZIndex = 5
-Comments.Font = Enum.Font.Code
-Comments.Text = ""
-Comments.TextColor3 = Color3.new(0.231373, 0.784314, 0.231373)
-Comments.TextSize = 15
-Comments.TextXAlignment = Enum.TextXAlignment.Left
-Comments.TextYAlignment = Enum.TextYAlignment.Top
-
-Globals.Name = "Globals"
-Globals.Parent = Source
-Globals.BackgroundColor3 = Color3.new(1, 1, 1)
-Globals.BackgroundTransparency = 1
-Globals.Size = UDim2.new(1, 0, 1, 0)
-Globals.ZIndex = 5
-Globals.Font = Enum.Font.Code
-Globals.Text = ""
-Globals.TextColor3 = Color3.new(0.517647, 0.839216, 0.968628)
-Globals.TextSize = 15
-Globals.TextXAlignment = Enum.TextXAlignment.Left
-Globals.TextYAlignment = Enum.TextYAlignment.Top
-
-Keywords.Name = "Keywords"
-Keywords.Parent = Source
-Keywords.BackgroundColor3 = Color3.new(1, 1, 1)
-Keywords.BackgroundTransparency = 1
-Keywords.Size = UDim2.new(1, 0, 1, 0)
-Keywords.ZIndex = 5
-Keywords.Font = Enum.Font.Code
-Keywords.Text = ""
-Keywords.TextColor3 = Color3.new(0.972549, 0.427451, 0.486275)
-Keywords.TextSize = 15
-Keywords.TextXAlignment = Enum.TextXAlignment.Left
-Keywords.TextYAlignment = Enum.TextYAlignment.Top
-
-RemoteHighlight.Name = "RemoteHighlight"
-RemoteHighlight.Parent = Sour
+-- Function to toggle macro
+local function toggleMacro()
+    macroEnabled = not macroEnabled
+    toggleButton.Text = macroEnabled and "Macro On" or "Macro Off"
+    
+    if macroEnabled th
